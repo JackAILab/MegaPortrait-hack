@@ -838,7 +838,7 @@ class Emtn(nn.Module):
 
 
         # Forward pass image through expression network
-        expression_resnet = self.expression_net(x)
+        expression_resnet = self.expression_net(x) ### Make ensure that expression_resnet.shape is (bs, 512, 2, 2).
         ### TODO 2
         expression_flatten = torch.flatten(expression_resnet, start_dim=1)
         expression = self.fc(expression_flatten)  # (bs, 2048) ->>> (bs, COMPRESS_DIM)
