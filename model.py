@@ -25,7 +25,7 @@ import cv2
 
 from mysixdrepnet import SixDRepNet_Detector
 # Set this flag to True for DEBUG mode, False for INFO mode
-debug_mode = True
+debug_mode = False
 
 # Configure logging
 if debug_mode:
@@ -35,8 +35,8 @@ else:
 
 
 # keep the code in one mega class for copying and pasting into Claude.ai
-FEATURE_SIZE_AVG_POOL = 4  # 🤷 these should align
-FEATURE_SIZE = (4, 4) # 🤷 1x1? 4x4? idk
+FEATURE_SIZE_AVG_POOL = 2 # use 2 - not 4. https://github.com/johndpope/MegaPortrait-hack/issues/23
+FEATURE_SIZE = (2, 2) 
 COMPRESS_DIM = 512 # 🤷 TODO 1: maybe 256 or 512, 512 may be more reasonable for Emtn/app compression
 
 # Define the device globally
@@ -285,8 +285,10 @@ class Eapp(nn.Module):
         # Second part
         es_resnet = self.custom_resnet50(x) ### Make sure es_resnet.shape is (bs, 512, 2, 2)
         ### TODO 2
+        # print(f"🍌 es:{es_resnet.shape}") # [1, 512, 2, 2]
         es_flatten = torch.flatten(es_resnet, start_dim=1)
         es = self.fc(es_flatten) # torch.Size([bs, 2048]) -> torch.Size([bs, COMPRESS_DIM])        
+       
         return vs, es
 
 
