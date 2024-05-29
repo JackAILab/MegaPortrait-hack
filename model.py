@@ -259,7 +259,7 @@ class Eapp(nn.Module):
         out = self.conv_1(out)
         logging.debug(f"After conv_1: {out.shape}") # [1, 1536, 32, 32]
         
-     # reshape 1546 -> C96 x D16
+        # reshape 1546 -> C96 x D16
         vs = out.view(out.size(0), 96, 16, *out.shape[2:]) # 🤷 this maybe inaccurate
         logging.debug(f"reshape 1546 -> C96 x D16 : {vs.shape}") 
         
@@ -283,7 +283,7 @@ class Eapp(nn.Module):
         logging.debug(f"After resblock3D_96_2_2: {vs.shape}")
 
         # Second part
-        es_resnet = self.custom_resnet50(x)
+        es_resnet = self.custom_resnet50(x) ### Make sure es_resnet.shape is (bs, 512, 2, 2)
         ### TODO 2
         es_flatten = torch.flatten(es_resnet, start_dim=1)
         es = self.fc(es_flatten) # torch.Size([bs, 2048]) -> torch.Size([bs, COMPRESS_DIM])        
@@ -821,7 +821,7 @@ class Emtn(nn.Module):
         # self.expression_net.adaptive_pool = nn.AdaptiveAvgPool2d((7, 7)) #OPTIONAL 🤷 - 16x16 is better?
 
         ## TODO 2
-        outputs=COMPRESS_DIM ## 512,,方便后面的WarpS2C操作 512 -> 2048 channel
+        outputs=COMPRESS_DIM ## for WarpS2C to 512 -> 2048 channel
         self.fc = torch.nn.Linear(2048, outputs)
 
     def forward(self, x):
